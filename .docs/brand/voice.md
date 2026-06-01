@@ -8,23 +8,26 @@
 - Simple words. Short sentences. 5th grade reading level maximum.
 
 ## Reading Level
-Write at a 5th grade level. Always.
+Write at a 5th grade level for short-form content (Threads posts, hooks, captions).
 
-The audience may be experts in their field — but they are reading fast, on a phone, half distracted. A word like "ambiguous" or "nuance" makes someone pause for a split second. That pause adds friction. Friction kills engagement.
+The audience may be experts in their field — but they are reading fast, on a phone, half distracted. Unnecessary complexity adds friction. Friction kills engagement. Depth comes from the idea, not the words used to explain it.
 
-Simple words reach everyone. Complex words reach fewer people and signal nothing extra.
+**The rule is not about removing business or technical language.** The audience knows words like "leverage", "implement", "funnel", "conversion", "open rate". Use them freely.
 
-**Before posting, ask:** could a 10 year old understand this sentence?
-If not, rewrite it.
+The rule is about avoiding words that make a general reader pause for no good reason — words that add no extra meaning and could easily be swapped for something simpler.
 
-Examples:
-- "nuanced" → "more to it than that"
+Examples of unnecessary complexity to avoid:
 - "ambiguous" → "unclear"
-- "leverage" → "use"
-- "optimise" → "improve"
-- "implement" → "do"
+- "nuanced" → "more to it than that"
+- "utilise" → "use"
+- "endeavour" → "try"
 
-Alex Hormozi, James Clear, and every high-reach creator follows this. Depth comes from the idea, not the words used to explain it.
+**Technical or industry words are fine — with one condition:**
+- In short posts: use them only if the audience definitely knows them
+- In long posts or videos: use them freely, but explain them when first introduced
+
+**Before posting short-form, ask:** would someone scrolling fast understand this instantly?
+If not, simplify the wording — not necessarily the idea.
 
 ## What to Avoid
 - Fluff or padding
@@ -33,7 +36,7 @@ Alex Hormozi, James Clear, and every high-reach creator follows this. Depth come
 - Viral clickbait framing
 - Talking down to the audience
 - Long sentences that make the reader work to find the point
-- Words that need a dictionary (if in doubt, swap it out)
+- Obscure words where a common one works just as well
 
 ## Inspirations — Study for Tone and Positioning
 | Name | What to take from them |
