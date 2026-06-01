@@ -28,7 +28,7 @@ Named people, tools, and platforms act as reach multipliers on Threads. Mentioni
 **The principle:** every variable (name, tool, platform) should earn its place in the post. If removing it makes the post cleaner, remove it. If it adds weight or reach without feeling forced, keep it.
 
 High-value names for this audience:
-- Business/content: Alex Hormozi, Leila Hormozi, Dan Koe, Gary Vee, MrBeast, James Clear, Charlie Morgan
+- Business/content: Alex Hormozi, Leila Hormozi, Dan Koe, Gary Vee, James Clear, Charlie Morgan, Codie Sanchez, Justin Welsh, Nicolas Cole
 - Marketing specific: Chase Diamond, Codie Sanchez
 - AI/tools: Anthropic, Claude, ChatGPT, OpenAI
 
