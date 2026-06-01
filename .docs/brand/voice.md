@@ -5,6 +5,26 @@
 - Not corporate. Not motivational poster. Not edgy for the sake of it.
 - Sounds like someone who has been in the trenches and is still there
 - Intellectual depth without being inaccessible
+- Simple words. Short sentences. 5th grade reading level maximum.
+
+## Reading Level
+Write at a 5th grade level. Always.
+
+The audience may be experts in their field — but they are reading fast, on a phone, half distracted. A word like "ambiguous" or "nuance" makes someone pause for a split second. That pause adds friction. Friction kills engagement.
+
+Simple words reach everyone. Complex words reach fewer people and signal nothing extra.
+
+**Before posting, ask:** could a 10 year old understand this sentence?
+If not, rewrite it.
+
+Examples:
+- "nuanced" → "more to it than that"
+- "ambiguous" → "unclear"
+- "leverage" → "use"
+- "optimise" → "improve"
+- "implement" → "do"
+
+Alex Hormozi, James Clear, and every high-reach creator follows this. Depth comes from the idea, not the words used to explain it.
 
 ## What to Avoid
 - Fluff or padding
@@ -12,6 +32,8 @@
 - Overly polished or performative positivity
 - Viral clickbait framing
 - Talking down to the audience
+- Long sentences that make the reader work to find the point
+- Words that need a dictionary (if in doubt, swap it out)
 
 ## Inspirations — Study for Tone and Positioning
 | Name | What to take from them |
