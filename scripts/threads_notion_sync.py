@@ -9,7 +9,7 @@ import os
 import sys
 import time
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 THREADS_TOKEN = os.environ["THREADS_ACCESS_TOKEN"]
 NOTION_TOKEN = os.environ["NOTION_API_KEY"]
@@ -64,15 +64,15 @@ def get_post_permalink(post_id):
     return resp.json()["permalink"]
 
 
-def get_threads_posts(limit=50):
-    resp = requests.get(
-        f"{THREADS_BASE}/me/threads",
-        params={
-            "fields": "id,text,timestamp,permalink",
-            "limit": limit,
-            "access_token": THREADS_TOKEN,
-        },
-    )
+def get_threads_posts(limit=50, since=None):
+    params = {
+        "fields": "id,text,timestamp,permalink",
+        "limit": limit,
+        "access_token": THREADS_TOKEN,
+    }
+    if since:
+        params["since"] = since
+    resp = requests.get(f"{THREADS_BASE}/me/threads", params=params)
     resp.raise_for_status()
     return resp.json().get("data", [])
 
@@ -113,6 +113,44 @@ def update_notion_page(page_id, props):
 
 def normalize_url(url):
     return url.rstrip("/").lower() if url else ""
+
+
+def get_all_notion_urls():
+    """Return a set of all Threads URLs already tracked in Notion."""
+    resp = requests.post(
+        f"{NOTION_BASE}/databases/{NOTION_DB_ID}/query",
+        headers=NOTION_HEADERS,
+        json={},
+    )
+    resp.raise_for_status()
+    urls = set()
+    for page in resp.json().get("results", []):
+        url = page["properties"].get("Threads URL", {}).get("url", "")
+        if url:
+            urls.add(normalize_url(url))
+    return urls
+
+
+def create_notion_page(post):
+    """Create a new Notion entry for a post detected directly on Threads."""
+    timestamp = post.get("timestamp", "")
+    date_posted = timestamp if timestamp else datetime.now(timezone.utc).isoformat()
+
+    resp = requests.post(
+        f"{NOTION_BASE}/pages",
+        headers=NOTION_HEADERS,
+        json={
+            "parent": {"database_id": NOTION_DB_ID},
+            "properties": {
+                "Post": {"title": [{"text": {"content": post.get("text", "")[:2000]}}]},
+                "Threads URL": {"url": post.get("permalink", "")},
+                "Status": {"select": {"name": "Posted"}},
+                "Date Posted": {"date": {"start": date_posted}},
+            },
+        },
+    )
+    resp.raise_for_status()
+    return resp.json()["id"]
 
 
 # ---------- Main tasks ----------
@@ -205,10 +243,46 @@ def sync_metrics():
     print(f"Metrics done: {updated} updated, {skipped} skipped.")
 
 
+def detect_new_posts():
+    """Fetch posts from the last hour and add any not already in Notion."""
+    print("--- Detecting new posts ---")
+
+    since = int((datetime.now(timezone.utc) - timedelta(hours=1)).timestamp())
+    recent_posts = get_threads_posts(limit=10, since=since)
+
+    # Filter client-side to posts within the last hour (API since param may vary)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=1)
+    recent_posts = [
+        p for p in recent_posts
+        if datetime.fromisoformat(p["timestamp"].replace("Z", "+00:00")) >= cutoff
+    ]
+    print(f"Posts in last hour: {len(recent_posts)}")
+
+    if not recent_posts:
+        return
+
+    existing_urls = get_all_notion_urls()
+    added = 0
+
+    for post in recent_posts:
+        url = normalize_url(post.get("permalink", ""))
+        if not url or url in existing_urls:
+            continue
+        try:
+            create_notion_page(post)
+            print(f"  Added to Notion: {post.get('permalink')}")
+            added += 1
+        except Exception as e:
+            print(f"  Error adding {post.get('permalink')}: {e}")
+
+    print(f"New posts added: {added}")
+
+
 if __name__ == "__main__":
     print(f"Sync started: {datetime.now(timezone.utc).isoformat()}")
     try:
         publish_scheduled()
+        detect_new_posts()
         sync_metrics()
     except Exception as e:
         print(f"Fatal error: {e}", file=sys.stderr)
