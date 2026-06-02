@@ -1,9 +1,9 @@
-name: Threads → Notion Sync
+name: Threads <-> Notion Sync
 
 on:
   schedule:
-    - cron: '0 8 * * *'   # Daily at 8am UTC (runs every day automatically)
-  workflow_dispatch:        # Manual trigger from GitHub Actions tab
+    - cron: '0 * * * *'  # Every hour — catches scheduled posts and syncs metrics
+  workflow_dispatch:       # Manual trigger from GitHub Actions tab
 
 jobs:
   sync:

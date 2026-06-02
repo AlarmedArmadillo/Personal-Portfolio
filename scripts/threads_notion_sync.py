@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-Threads -> Notion metrics sync
-Fetches insights for all 'Posted' entries in the Notion tracker and marks them 'Analyzed'.
+Threads <-> Notion sync
+- publish_scheduled: finds Scheduled posts due now, publishes to Threads, writes URL back
+- sync_metrics: pulls insights for Posted entries, marks them Analyzed
 """
 
 import os
 import sys
+import time
 import requests
 from datetime import datetime, timezone
 
@@ -20,6 +22,46 @@ NOTION_HEADERS = {
     "Notion-Version": "2022-06-28",
     "Content-Type": "application/json",
 }
+
+
+# ---------- Threads helpers ----------
+
+def get_threads_user_id():
+    resp = requests.get(
+        f"{THREADS_BASE}/me",
+        params={"fields": "id", "access_token": THREADS_TOKEN},
+    )
+    resp.raise_for_status()
+    return resp.json()["id"]
+
+
+def create_threads_container(user_id, text):
+    resp = requests.post(
+        f"{THREADS_BASE}/{user_id}/threads",
+        params={"access_token": THREADS_TOKEN},
+        json={"media_type": "TEXT", "text": text},
+    )
+    resp.raise_for_status()
+    return resp.json()["id"]
+
+
+def publish_threads_container(user_id, container_id):
+    resp = requests.post(
+        f"{THREADS_BASE}/{user_id}/threads_publish",
+        params={"access_token": THREADS_TOKEN},
+        json={"creation_id": container_id},
+    )
+    resp.raise_for_status()
+    return resp.json()["id"]
+
+
+def get_post_permalink(post_id):
+    resp = requests.get(
+        f"{THREADS_BASE}/{post_id}",
+        params={"fields": "permalink", "access_token": THREADS_TOKEN},
+    )
+    resp.raise_for_status()
+    return resp.json()["permalink"]
 
 
 def get_threads_posts(limit=50):
@@ -48,28 +90,23 @@ def get_post_insights(post_id):
     return {item["name"]: item["values"][0]["value"] for item in data}
 
 
-def get_notion_posted():
+# ---------- Notion helpers ----------
+
+def query_notion(filter_payload):
     resp = requests.post(
         f"{NOTION_BASE}/databases/{NOTION_DB_ID}/query",
         headers=NOTION_HEADERS,
-        json={"filter": {"property": "Status", "select": {"equals": "Posted"}}},
+        json={"filter": filter_payload},
     )
     resp.raise_for_status()
     return resp.json().get("results", [])
 
 
-def update_notion_page(page_id, metrics):
-    payload = {
-        "properties": {
-            "Views": {"number": metrics.get("views", 0)},
-            "Likes": {"number": metrics.get("likes", 0)},
-            "Comments": {"number": metrics.get("replies", 0)},
-            "Reposts": {"number": metrics.get("reposts", 0)},
-            "Status": {"select": {"name": "Analyzed"}},
-        }
-    }
+def update_notion_page(page_id, props):
     resp = requests.patch(
-        f"{NOTION_BASE}/pages/{page_id}", headers=NOTION_HEADERS, json=payload
+        f"{NOTION_BASE}/pages/{page_id}",
+        headers=NOTION_HEADERS,
+        json={"properties": props},
     )
     resp.raise_for_status()
 
@@ -78,20 +115,60 @@ def normalize_url(url):
     return url.rstrip("/").lower() if url else ""
 
 
-def sync():
-    print(f"Sync started: {datetime.now(timezone.utc).isoformat()}")
+# ---------- Main tasks ----------
+
+def publish_scheduled():
+    print("--- Publishing scheduled posts ---")
+    now = datetime.now(timezone.utc).isoformat()
+
+    pages = query_notion({
+        "and": [
+            {"property": "Status", "select": {"equals": "Scheduled"}},
+            {"property": "Date Posted", "date": {"on_or_before": now}},
+        ]
+    })
+    print(f"Posts due to publish: {len(pages)}")
+
+    if not pages:
+        return
+
+    user_id = get_threads_user_id()
+
+    for page in pages:
+        props = page.get("properties", {})
+        title_parts = props.get("Post", {}).get("title", [])
+        post_text = "".join(p.get("plain_text", "") for p in title_parts)
+
+        if not post_text:
+            print(f"  Skipped (no text): {page['id']}")
+            continue
+
+        try:
+            container_id = create_threads_container(user_id, post_text)
+            time.sleep(5)  # Threads requires a short wait between create and publish
+            post_id = publish_threads_container(user_id, container_id)
+            permalink = get_post_permalink(post_id)
+
+            update_notion_page(page["id"], {
+                "Threads URL": {"url": permalink},
+                "Status": {"select": {"name": "Posted"}},
+            })
+            print(f"  Published: {permalink}")
+        except Exception as e:
+            print(f"  Error publishing {page['id']}: {e}")
+
+
+def sync_metrics():
+    print("--- Syncing metrics ---")
 
     threads_posts = get_threads_posts()
-    permalink_map = {
-        normalize_url(p.get("permalink", "")): p for p in threads_posts
-    }
+    permalink_map = {normalize_url(p.get("permalink", "")): p for p in threads_posts}
     print(f"Threads posts fetched: {len(threads_posts)}")
 
-    notion_pages = get_notion_posted()
+    notion_pages = query_notion({"property": "Status", "select": {"equals": "Posted"}})
     print(f"Notion 'Posted' entries: {len(notion_pages)}")
 
     if not notion_pages:
-        print("Nothing to update.")
         return
 
     updated = 0
@@ -101,33 +178,38 @@ def sync():
             page["properties"].get("Threads URL", {}).get("url", "")
         )
         if not notion_url:
-            print(f"  Skipped (no URL): {page['id']}")
             skipped += 1
             continue
 
         post = permalink_map.get(notion_url)
         if not post:
-            print(f"  No Threads match for: {notion_url}")
+            print(f"  No match: {notion_url}")
             skipped += 1
             continue
 
         try:
             insights = get_post_insights(post["id"])
-            update_notion_page(page["id"], insights)
-            print(f"  Updated: {notion_url}")
-            print(f"    views={insights.get('views')} likes={insights.get('likes')} "
-                  f"replies={insights.get('replies')} reposts={insights.get('reposts')}")
+            update_notion_page(page["id"], {
+                "Views": {"number": insights.get("views", 0)},
+                "Likes": {"number": insights.get("likes", 0)},
+                "Comments": {"number": insights.get("replies", 0)},
+                "Reposts": {"number": insights.get("reposts", 0)},
+                "Status": {"select": {"name": "Analyzed"}},
+            })
+            print(f"  Updated: {notion_url} → views={insights.get('views')} likes={insights.get('likes')}")
             updated += 1
         except Exception as e:
             print(f"  Error on {notion_url}: {e}")
             skipped += 1
 
-    print(f"\nDone. {updated} updated, {skipped} skipped.")
+    print(f"Metrics done: {updated} updated, {skipped} skipped.")
 
 
 if __name__ == "__main__":
+    print(f"Sync started: {datetime.now(timezone.utc).isoformat()}")
     try:
-        sync()
+        publish_scheduled()
+        sync_metrics()
     except Exception as e:
         print(f"Fatal error: {e}", file=sys.stderr)
         sys.exit(1)
