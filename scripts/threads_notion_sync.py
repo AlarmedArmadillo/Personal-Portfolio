@@ -243,6 +243,60 @@ def sync_metrics():
     print(f"Metrics done: {updated} updated, {skipped} skipped.")
 
 
+def auto_post_drafted(min_gap_hours=2, post_hour_start=8, post_hour_end=22):
+    """Post the oldest Drafted entry if no post has gone out in the last min_gap_hours."""
+    print("--- Auto-posting from Drafted queue ---")
+    now = datetime.now(timezone.utc)
+
+    if not (post_hour_start <= now.hour < post_hour_end):
+        print(f"  Outside posting window ({post_hour_start}:00–{post_hour_end}:00 UTC).")
+        return
+
+    # Check last Threads post — skip if posted too recently
+    recent = get_threads_posts(limit=1)
+    if recent:
+        last_ts = datetime.fromisoformat(recent[0]["timestamp"].replace("Z", "+00:00"))
+        gap_hours = (now - last_ts).total_seconds() / 3600
+        if gap_hours < min_gap_hours:
+            print(f"  Last post was {gap_hours:.1f}h ago (min gap {min_gap_hours}h), skipping.")
+            return
+
+    drafted = query_notion({"property": "Status", "select": {"equals": "Drafted"}})
+    if not drafted:
+        print("  No Drafted posts available.")
+        return
+
+    def sort_key(page):
+        date_start = (page["properties"].get("Date Posted", {}).get("date") or {}).get("start", "")
+        return date_start or page.get("created_time", "")
+
+    drafted.sort(key=sort_key)
+    page = drafted[0]
+
+    props = page.get("properties", {})
+    title_parts = props.get("Post", {}).get("title", [])
+    post_text = "".join(p.get("plain_text", "") for p in title_parts)
+
+    if not post_text:
+        print(f"  Skipped (no text): {page['id']}")
+        return
+
+    try:
+        user_id = get_threads_user_id()
+        container_id = create_threads_container(user_id, post_text)
+        time.sleep(5)
+        post_id = publish_threads_container(user_id, container_id)
+        permalink = get_post_permalink(post_id)
+        update_notion_page(page["id"], {
+            "Threads URL": {"url": permalink},
+            "Status": {"select": {"name": "Posted"}},
+            "Date Posted": {"date": {"start": now.isoformat()}},
+        })
+        print(f"  Auto-posted: {permalink}")
+    except Exception as e:
+        print(f"  Error auto-posting {page['id']}: {e}")
+
+
 def detect_new_posts():
     """Fetch posts from the last hour and add any not already in Notion."""
     print("--- Detecting new posts ---")
@@ -282,6 +336,7 @@ if __name__ == "__main__":
     print(f"Sync started: {datetime.now(timezone.utc).isoformat()}")
     try:
         publish_scheduled()
+        auto_post_drafted()
         detect_new_posts()
         sync_metrics()
     except Exception as e:
