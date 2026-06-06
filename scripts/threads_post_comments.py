@@ -44,30 +44,44 @@ def find_post_by_shortcode(shortcode, limit=100):
 
 
 def get_replies(post_id):
-    """Fetch top-level replies for a post."""
-    resp = requests.get(
-        f"{THREADS_BASE}/{post_id}/replies",
-        params={
-            "fields": "id,text,username,timestamp,has_replies",
-            "access_token": THREADS_TOKEN,
-        },
-    )
-    resp.raise_for_status()
-    return resp.json().get("data", [])
+    """Fetch ALL top-level replies for a post, paginating through all pages."""
+    all_replies = []
+    params = {
+        "fields": "id,text,username,timestamp,has_replies",
+        "limit": 100,
+        "access_token": THREADS_TOKEN,
+    }
+    while True:
+        resp = requests.get(f"{THREADS_BASE}/{post_id}/replies", params=params)
+        resp.raise_for_status()
+        data = resp.json()
+        all_replies.extend(data.get("data", []))
+        cursor = data.get("paging", {}).get("cursors", {}).get("after")
+        if not cursor:
+            break
+        params["after"] = cursor
+    return all_replies
 
 
 def get_nested_replies(reply_id):
-    """Fetch replies to a reply (nested thread)."""
-    resp = requests.get(
-        f"{THREADS_BASE}/{reply_id}/replies",
-        params={
-            "fields": "id,text,username,timestamp",
-            "access_token": THREADS_TOKEN,
-        },
-    )
-    if resp.status_code != 200:
-        return []
-    return resp.json().get("data", [])
+    """Fetch all replies to a reply, paginating if needed."""
+    all_nested = []
+    params = {
+        "fields": "id,text,username,timestamp",
+        "limit": 100,
+        "access_token": THREADS_TOKEN,
+    }
+    while True:
+        resp = requests.get(f"{THREADS_BASE}/{reply_id}/replies", params=params)
+        if resp.status_code != 200:
+            break
+        data = resp.json()
+        all_nested.extend(data.get("data", []))
+        cursor = data.get("paging", {}).get("cursors", {}).get("after")
+        if not cursor:
+            break
+        params["after"] = cursor
+    return all_nested
 
 
 def section(title):
