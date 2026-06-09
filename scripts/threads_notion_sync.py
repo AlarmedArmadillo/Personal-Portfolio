@@ -3,6 +3,7 @@
 Threads <-> Notion sync
 - publish_scheduled: finds Scheduled posts due now, publishes to Threads, writes URL back
 - sync_metrics: pulls insights for Posted entries, marks them Analyzed
+- sync_metrics_14d: daily deep refresh — all posts in the last 14 days, all statuses
 """
 
 import os
@@ -77,6 +78,27 @@ def get_threads_posts(limit=50, since=None):
     return resp.json().get("data", [])
 
 
+def get_threads_posts_since(since_ts, limit=100):
+    """Fetch ALL posts since a Unix timestamp, paginating through all pages."""
+    all_posts = []
+    params = {
+        "fields": "id,text,timestamp,permalink",
+        "limit": limit,
+        "since": since_ts,
+        "access_token": THREADS_TOKEN,
+    }
+    while True:
+        resp = requests.get(f"{THREADS_BASE}/me/threads", params=params)
+        resp.raise_for_status()
+        data = resp.json()
+        all_posts.extend(data.get("data", []))
+        cursor = data.get("paging", {}).get("cursors", {}).get("after")
+        if not cursor:
+            break
+        params["after"] = cursor
+    return all_posts
+
+
 def get_post_insights(post_id):
     resp = requests.get(
         f"{THREADS_BASE}/{post_id}/insights",
@@ -129,6 +151,28 @@ def get_all_notion_urls():
         if url:
             urls.add(normalize_url(url))
     return urls
+
+
+def get_all_notion_pages_with_urls():
+    """Return {normalized_url: page_id} for every Notion page that has a Threads URL."""
+    url_map = {}
+    payload = {}
+    while True:
+        resp = requests.post(
+            f"{NOTION_BASE}/databases/{NOTION_DB_ID}/query",
+            headers=NOTION_HEADERS,
+            json=payload,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        for page in data.get("results", []):
+            url = page["properties"].get("Threads URL", {}).get("url", "")
+            if url:
+                url_map[normalize_url(url)] = page["id"]
+        if not data.get("has_more"):
+            break
+        payload["start_cursor"] = data["next_cursor"]
+    return url_map
 
 
 def create_notion_page(post):
@@ -332,13 +376,76 @@ def detect_new_posts():
     print(f"New posts added: {added}")
 
 
+def sync_metrics_14d(days=14):
+    """
+    Daily deep refresh: fetch all posts from the last N days, pull fresh insights,
+    update every matching Notion page regardless of status. Creates pages for any
+    posts not yet tracked.
+    """
+    print(f"--- 14-day metrics sync (last {days} days) ---")
+    since_ts = int((datetime.now(timezone.utc) - timedelta(days=days)).timestamp())
+
+    posts = get_threads_posts_since(since_ts)
+    print(f"Threads posts in window: {len(posts)}")
+    if not posts:
+        print("  Nothing to sync.")
+        return
+
+    # Client-side filter — API `since` param can be fuzzy
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    posts = [
+        p for p in posts
+        if datetime.fromisoformat(p["timestamp"].replace("Z", "+00:00")) >= cutoff
+    ]
+    print(f"Posts within {days}-day window after filter: {len(posts)}")
+
+    notion_url_map = get_all_notion_pages_with_urls()
+
+    updated = 0
+    created = 0
+    errors = 0
+
+    for post in posts:
+        norm_url = normalize_url(post.get("permalink", ""))
+        if not norm_url:
+            continue
+        try:
+            insights = get_post_insights(post["id"])
+            metrics = {
+                "Views": {"number": insights.get("views", 0)},
+                "Likes": {"number": insights.get("likes", 0)},
+                "Comments": {"number": insights.get("replies", 0)},
+                "Reposts": {"number": insights.get("reposts", 0)},
+            }
+
+            if norm_url in notion_url_map:
+                update_notion_page(notion_url_map[norm_url], metrics)
+                print(f"  Updated: {norm_url} — views={insights.get('views')} likes={insights.get('likes')} comments={insights.get('replies')}")
+                updated += 1
+            else:
+                page_id = create_notion_page(post)
+                update_notion_page(page_id, metrics)
+                print(f"  Created + synced: {post.get('permalink')}")
+                created += 1
+
+        except Exception as e:
+            print(f"  Error on {norm_url}: {e}")
+            errors += 1
+
+    print(f"14-day sync done: {updated} updated, {created} created, {errors} errors.")
+
+
 if __name__ == "__main__":
-    print(f"Sync started: {datetime.now(timezone.utc).isoformat()}")
+    mode = sys.argv[1] if len(sys.argv) > 1 else "full"
+    print(f"Sync started [{mode}]: {datetime.now(timezone.utc).isoformat()}")
     try:
-        publish_scheduled()
-        auto_post_drafted()
-        detect_new_posts()
-        sync_metrics()
+        if mode == "analyze":
+            sync_metrics_14d()
+        else:
+            publish_scheduled()
+            auto_post_drafted()
+            detect_new_posts()
+            sync_metrics()
     except Exception as e:
         print(f"Fatal error: {e}", file=sys.stderr)
         sys.exit(1)
