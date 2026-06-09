@@ -82,7 +82,7 @@ def get_threads_posts_since(since_ts, limit=100):
     """Fetch ALL posts since a Unix timestamp, paginating through all pages."""
     all_posts = []
     params = {
-        "fields": "id,text,timestamp,permalink",
+        "fields": "id,text,timestamp,permalink,is_reply",
         "limit": limit,
         "since": since_ts,
         "access_token": THREADS_TOKEN,
@@ -124,13 +124,18 @@ def query_notion(filter_payload):
     return resp.json().get("results", [])
 
 
-def update_notion_page(page_id, props):
-    resp = requests.patch(
-        f"{NOTION_BASE}/pages/{page_id}",
-        headers=NOTION_HEADERS,
-        json={"properties": props},
-    )
-    resp.raise_for_status()
+def update_notion_page(page_id, props, retries=3):
+    for attempt in range(retries):
+        resp = requests.patch(
+            f"{NOTION_BASE}/pages/{page_id}",
+            headers=NOTION_HEADERS,
+            json={"properties": props},
+        )
+        if resp.status_code == 502 and attempt < retries - 1:
+            time.sleep(2 ** attempt)
+            continue
+        resp.raise_for_status()
+        return
 
 
 def normalize_url(url):
@@ -398,6 +403,10 @@ def sync_metrics_14d(days=14):
         if datetime.fromisoformat(p["timestamp"].replace("Z", "+00:00")) >= cutoff
     ]
     print(f"Posts within {days}-day window after filter: {len(posts)}")
+
+    # Exclude replies to other posts — insights API returns empty data for them
+    posts = [p for p in posts if not p.get("is_reply", False)]
+    print(f"Original posts (replies excluded): {len(posts)}")
 
     notion_url_map = get_all_notion_pages_with_urls()
 
