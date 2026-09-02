@@ -20,6 +20,7 @@ Load these when relevant — don't load all at once:
 | `.docs/brand/voice.md` | Writing copy, reviewing content tone, or giving feedback on ideas |
 | `.docs/content/pillars.md` | Ideating posts, planning content, or reviewing content alignment |
 | `.docs/systems/funnel.md` | Discussing the business model, services, or email marketing systems |
+| `.docs/systems/lead-magnets.md` | Building lead magnets or offers, planning funnels, or making monetisation decisions (Hormozi principles — keep them intact) |
 
 ## Feedback Rules (always apply)
 - Lead with the verdict, then reasoning — no preamble
