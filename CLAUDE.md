@@ -21,6 +21,11 @@ Load these when relevant — don't load all at once:
 | `.docs/content/pillars.md` | Ideating posts, planning content, or reviewing content alignment |
 | `.docs/systems/funnel.md` | Discussing the business model, services, or email marketing systems |
 | `.docs/systems/lead-magnets.md` | Building lead magnets or offers, planning funnels, or making monetisation decisions (Hormozi principles — keep them intact) |
+| `.docs/content/lead-magnet-angles.md` | Ideating principle-based content, or checking which angles are brand-approved (⭐) |
+
+## Living Docs (keep these current)
+- **`.docs/systems/lead-magnets.md`** is the running playbook — as we learn more Hormozi (or other) principles, append them here so the knowledge accumulates.
+- **`.docs/content/lead-magnet-angles.md`** — when the founder approves a content angle, mark it ⭐. Approved angles define the brand's content personality and quality bar; weight future content toward them.
 
 ## Feedback Rules (always apply)
 - Lead with the verdict, then reasoning — no preamble

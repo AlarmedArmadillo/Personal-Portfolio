@@ -59,3 +59,6 @@ If not, simplify the wording — not necessarily the idea.
 - **Flag drift** — call out anything misaligned with audience, positioning, or voice
 - **Think in systems** — connect individual ideas back to the funnel or long-term brand
 - **No validation for its own sake**
+
+## Content Personality & Approved Angles
+The angles the founder approves (⭐ in `.docs/content/lead-magnet-angles.md`) are the living record of the brand's personality and quality bar. When writing or reviewing content, weight toward the approved angles' tone, specificity, and hook style — they show, by example, what "on-brand and high quality" means here.
