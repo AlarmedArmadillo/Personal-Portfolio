@@ -6,6 +6,21 @@ each can drop its own **micro-magnet** (comment a keyword → a 5-min written br
 
 **This is a living doc.** As we learn more principles, add clusters. As angles get approved, star them.
 
+## Unified CTA (current phase)
+Every lead-magnet video shares **one CTA → "comment FUNNEL"**, which sends people to the anchor free lead magnet, **The Lead Magnet Blueprint** (`.docs/content/lead-magnet-blueprint.md`). One keyword, one asset, all videos feed it — the right call for a solo operator.
+
+Each video teaches **one slice** of the Blueprint (the tip); the CTA hands over the whole iceberg. Cluster → Blueprint mapping:
+
+| Blueprint section | Clusters that slice it |
+|---|---|
+| Big picture (traffic→magnet→auto→sales) | #5 · #12 |
+| What a lead magnet is | #1 · #2 · #3 · #10 |
+| The 3 types | #9 · #8 |
+| Build it (name, make it good) | #7 · #8 |
+| Plug it in (traffic / automation / sales) | #4 · #6 · #11 |
+
+*The per-cluster keywords under each cluster below are **parked** for a later micro-magnet phase — for now, everything points to FUNNEL.*
+
 ## Rules
 - **Universal lesson, specific example.** Open on a concrete case (an ecom store, a coach, an agency); land on the universal principle. Broad positioning, specific content.
 - **Honest voice.** No hype, no fake scarcity. Give the secrets away.

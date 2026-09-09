@@ -1,6 +1,6 @@
 # The Lead Magnet Blueprint
 
-The canonical copy of our anchor free lead magnet — the one asset **all lead-magnet videos point to** (CTA: "comment BLUEPRINT"). Free, modular (principles not niche), built to feel like a paid product but shippable in a night. Publish as a Notion/Google doc; keep this file as the source of truth.
+The canonical copy of our anchor free lead magnet — the one asset **all lead-magnet videos point to** (CTA: "comment FUNNEL"). Free, modular (principles not niche), built to feel like a paid product but shippable in a night. Publish as a Notion/Google doc; keep this file as the source of truth.
 
 Modular by design: principles are universal; examples are shown across three avatars — 🎥 social media creator · 💻 digital product seller · 🛒 ecom store owner.
 
@@ -78,6 +78,6 @@ Want your funnel built — or the whole thing done for you? [→ your link]
 
 ## Production notes
 - **Name — A/B test:** "The Lead Magnet Blueprint" vs "The 1-Post Funnel."
-- **Unified CTA** for every lead-magnet video: *"Comment BLUEPRINT and I'll send it."* One keyword, one asset, all videos feed it.
+- **Unified CTA** for every lead-magnet video: *"Comment FUNNEL and I'll send it."* One keyword, one asset, all videos feed it.
 - **Delivery:** public Notion/Google doc; add 3 optional visuals (funnel map, ❌ vs ✅ example, the 3 types). Text carries it — visuals are a bonus.
 - **Role in the funnel:** this is a **skill-door** (see North Star) — the free entry into the stack; it bridges to the done-for-you service.
