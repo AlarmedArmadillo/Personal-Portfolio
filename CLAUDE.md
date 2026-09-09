@@ -22,6 +22,7 @@ Load these when relevant — don't load all at once:
 | `.docs/systems/funnel.md` | Discussing the business model, services, or email marketing systems |
 | `.docs/systems/lead-magnets.md` | Building lead magnets or offers, planning funnels, or making monetisation decisions (Hormozi principles — keep them intact) |
 | `.docs/content/lead-magnet-angles.md` | Ideating principle-based content, or checking which angles are brand-approved (⭐) |
+| `.docs/content/lead-magnet-blueprint.md` | The anchor free lead magnet (all lead-magnet videos point to it; CTA "comment BLUEPRINT") — source of truth for the published doc |
 
 ## Living Docs (keep these current)
 - **`.docs/systems/lead-magnets.md`** is the running playbook — as we learn more Hormozi (or other) principles, append them here so the knowledge accumulates.
