@@ -20,7 +20,7 @@ The mission: teach the **stack of business skills** that let anyone build a busi
 Lead magnets, the micro-magnet framework, the funnel — these are **individual skill-doors into the stack**, not the whole business. Any single one is the tip of the iceberg.
 
 ## Positioning
-Personal brand built on proof-first education. I only teach what I'm doing or have done. The goal is to become a trusted name in online communication as a monetisation method — primarily email marketing.
+Personal brand built on proof-first education. I only teach what I'm doing or have done. The goal is to become a trusted name for teaching the business skills that monetise — starting with **email marketing** as the first, sharpest skill-door (the beachhead), then stacking outward. Email is door #1, not the whole identity (see North Star).
 
 ## Target Audience
 - Founders and solo operators
@@ -32,16 +32,17 @@ Personal brand built on proof-first education. I only teach what I'm doing or ha
 They're tired of clickbait and want real frameworks, real talk, and proof.
 
 ## What I'm Building Toward
-A service business around email marketing and online sales systems:
+An education + service business teaching the business skill stack — with email marketing as the entry skill (door #1):
 1. Build my own audience using the exact methods I'll teach
 2. Generate my own revenue with those methods (proof it works)
-3. Sell those systems and services to my audience
+3. Sell the skills (education / community) and the done-for-you systems and services to my audience
 
 ## Business Structure
 - **Personal brand** = public face, content, credibility
 - **Mango Media** = business entity (invoices, Stacked newsletter, backend) — stays in background
 
-## Core Topics
+## Core Topics (the skills in the stack)
+Each is a skill-door — a content pillar, a potential micro-magnet, eventually a module (see North Star).
 - Sales (frameworks, psychology, execution)
 - Email marketing and digital marketing (tools, strategy, real results)
 - AI and tools (what actually moves the needle)
