@@ -7,14 +7,19 @@ The feel: **witty, friendly, business-savvy.** Wit lives in the *copy*; the desi
 |------|-----|------|
 | **Carbon Black** | `#1A1A1A` | All body / reading text; strong statements. Never pure `#000`. |
 | **Chalk** | `#F4F9E9` | Primary background — soft off-white (never pure `#FFF`; softer, warmer, less glare). |
-| **Crimson Carrot** | `#F5540A` | Primary accent — CTAs, buttons, the highlighted caption word, key emphasis. |
-| **Tiger Orange** | `#F18701` | Secondary / warm accent — supporting highlights, panel tints, friendly warmth. |
+| **Crimson Carrot** | `#F5540A` | **Lead / hero brand colour** — colour-block identity surfaces (covers, hook & CTA slides, highlights, buttons) with large Chalk/white text + icons. Also the highlighted caption word. |
+| **Tiger Orange** | `#F18701` | Secondary / warm accent — supporting highlights, panel tints, variety. Not a text colour. |
 
-### Colour rules
-- **Orange is an accent, never small body text** — it fails contrast on a light background. Body/reading text is always **Carbon Black on Chalk** (excellent contrast).
-- When orange *must* be display text, use **Crimson Carrot** at large, bold sizes only. Keep **Tiger Orange** for fills and warmth, not text.
+### Colour rules — two surface modes
+Bright brands earn recognition by using their colour *boldly*, but they keep it legible. Two modes:
+- **Identity / hero surfaces** (covers, hook & CTA slides, story highlights, buttons): flood with **Crimson Carrot**, put **large bold Chalk/white text + icons** on top. This is where the brand gets loud and recognisable.
+- **Teaching surfaces** (dense text, carousels, body copy): **Carbon on Chalk**, with Crimson Carrot as the highlight/accent. Readable and save-worthy.
+
+Guardrails:
+- **No small or light body text on orange.** White/Chalk on Crimson Carrot only clears contrast at *large, bold* sizes (~3:1). For smaller text on an orange fill, use **Carbon** (dark) — it reads better (~5.4:1).
+- Body / reading text is always **Carbon on Chalk**.
 - **Never** pure white (`#FFFFFF`) or pure black (`#000000`).
-- **One accent per view.** Don't let both oranges fight in the same block — pick one to lead.
+- One orange leads per view — don't let both fight in the same block.
 
 ## Fonts (max 2)
 - **Headlines / captions:** **Poppins** (Bold / ExtraBold) — friendly, geometric, reads great in caps.
