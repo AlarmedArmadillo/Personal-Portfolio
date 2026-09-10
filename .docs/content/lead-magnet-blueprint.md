@@ -71,6 +71,34 @@ The lead magnet is the **hinge**. Skip it and you sell to strangers. Nail it and
 > Subject: *did something go wrong at checkout?*
 > Hey [name], you left [product] behind — saved it: [link]. If something stopped you it's usually: not sure → [reviews]; bad timing → low in stock; forgot → one tap: [link]. Reply and tell me what's holding you back — I read every one.
 
+### Part 6 — The Toolkit (build yours today)
+*The content teaches the idea; this is the doing. This is what makes the Blueprint worth opting in for.*
+
+**A) The 20-minute build (checklist)**
+1. Pick **one narrow problem** your buyer has.
+2. Pick a **type** — reveal / sample / step 1.
+3. **Deliver it simply** — a doc, template, calculator, or 60-sec Loom.
+4. **Name it** — outcome + who it's for. Test 2 names.
+5. Add the **CTA + bridge** to your paid thing.
+Ship it, then improve it. Done beats perfect.
+
+**B) The 3-types picker**
+- Problem gets worse while they wait? → **Reveal** (audit / quiz / calculator).
+- Want them to taste the paid thing? → **Sample**.
+- It's a multi-step process? → **Step 1 of X**.
+
+**C) The nurture sequence (3 emails — set once, runs forever)**
+- **Email 1 — instant:** deliver it + welcome. *"Here's [thing]. I'm [name], I help [who] do [outcome]."*
+- **Email 2 — day 2:** a quick win + your story. Teach one more small thing; show you've done it.
+- **Email 3 — day 3–4:** the offer. Name the next problem; make the offer that solves it. Soft, clear, one CTA.
+
+**D) 3 worked mini-magnets (steal + adapt)**
+- 🎥 **Creator:** *"5 hooks that got 2M views"* — a one-page swipe. Bridge → *"want 30 more + my hook system?"*
+- 💻 **Course:** *"The 1-page cheat sheet from Module 1"* — a real slice. Bridge → *"the full course."*
+- 🛒 **Store:** the cart-recovery email (Part 5). Bridge → *"all 5 flows, done for you."*
+
+**E) The idea generator** — the AI prompt in Part 5: plug in your business, get 3 lead-magnet ideas that point at your offer.
+
 ### Your next step
 Want your funnel built — or the whole thing done for you? [→ your link]
 
