@@ -18,6 +18,7 @@ Load these when relevant — don't load all at once:
 |------|-------------|
 | `.docs/brand/strategy.md` | Discussing brand direction, positioning, or audience |
 | `.docs/brand/voice.md` | Writing copy, reviewing content tone, or giving feedback on ideas |
+| `.docs/brand/visual-identity.md` | Designing anything visual — slides, graphics, the site (colours, fonts, look) |
 | `.docs/content/pillars.md` | Ideating posts, planning content, or reviewing content alignment |
 | `.docs/systems/funnel.md` | Discussing the business model, services, or email marketing systems |
 | `.docs/systems/lead-magnets.md` | Building lead magnets or offers, planning funnels, or making monetisation decisions (Hormozi principles — keep them intact) |
